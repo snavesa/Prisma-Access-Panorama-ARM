@@ -121,7 +121,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2019-11-01",
             "name": "[parameters('publicIPAddresses_panoramaIP_name')]",
-            "location": "centralus",
+	    "location": "[parameters('location')]",
             "tags": {
                 "RunStatus": "NOSTOP",
                 "StoreStatus": "DND"
