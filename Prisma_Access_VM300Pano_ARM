@@ -249,6 +249,18 @@
             }
         },
         {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('storageAccounts_diag_name'), '/default/bootdiagnostics')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_diag_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_diag_name'))]"
+            ],
+            "properties": {
+                "publicAccess": "None"
+            }
+        },
+        {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2019-06-01",
             "name": "[concat(parameters('storageAccounts_diag_name'), '/default')]",
@@ -323,43 +335,6 @@
 					}
 				}
 				]
-        },
-        {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-05-01",
-            "name": "[parameters('networkInterfaces_panomgmt_name')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_VNET_name'), parameters('subnet3Name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
-            ],
-            "tags": {
-                "RunStatus": "NOSTOP",
-                "StoreStatus": "DND"
-            },
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_VNET_name'), parameters('subnet3Name'))]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
-                },
-                "enableAcceleratedNetworking": false,
-                "enableIPForwarding": false,
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
-                }
-            }
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
@@ -456,6 +431,43 @@
             }
         },
         {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('networkInterfaces_panomgmt_name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_VNET_name'), parameters('subnet3Name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+            ],
+            "tags": {
+                "RunStatus": "NOSTOP",
+                "StoreStatus": "DND"
+            },
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_VNET_name'), parameters('subnet3Name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                }
+            }
+        },
+        {
             "type": "Microsoft.Network/routeTables",
             "apiVersion": "2020-05-01",
             "name": "internal_routetable",
@@ -490,68 +502,6 @@
             			}
             		}
             	]
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2019-12-01",
-            "name": "[parameters('virtualMachines_panorama_name')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_panomgmt_name'))]",
-                "[resourceId('Microsoft.Storage/StorageAccounts', parameters('storageAccounts_diag_name'))]"
-            ],
-            "tags": {
-                "RunStatus": "NOSTOP",
-                "StoreStatus": "DND"
-            },
-            "plan": {
-                "name": "byol",
-                "product": "panorama",
-                "publisher": "paloaltonetworks"
-            },
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D4_v2"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "paloaltonetworks",
-                        "offer": "panorama",
-                        "sku": "byol",
-                        "version": "9.1.2"
-                    }
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachines_panorama_name')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_panomgmt_name'))]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[concat('https://', parameters('storageAccounts_diag_name'), '.blob.core.windows.net/')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_diag_name'), '/default/bootdiagnostics')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_diag_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_diag_name'))]"
-            ],
-            "properties": {
-                "publicAccess": "None"
             }
         },
         {
@@ -607,6 +557,56 @@
                             }
                         }
                     ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-12-01",
+            "name": "[parameters('virtualMachines_panorama_name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_panomgmt_name'))]",
+                "[resourceId('Microsoft.Storage/StorageAccounts', parameters('storageAccounts_diag_name'))]"
+            ],
+            "tags": {
+                "RunStatus": "NOSTOP",
+                "StoreStatus": "DND"
+            },
+            "plan": {
+                "name": "byol",
+                "product": "panorama",
+                "publisher": "paloaltonetworks"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D4_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "paloaltonetworks",
+                        "offer": "panorama",
+                        "sku": "byol",
+                        "version": "9.1.2"
+                    }
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_panorama_name')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_panomgmt_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https://', parameters('storageAccounts_diag_name'), '.blob.core.windows.net/')]"
+                    }
                 }
             }
         }
