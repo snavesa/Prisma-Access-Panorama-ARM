@@ -3,9 +3,9 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-			"defaultValue": "[resourceGroup().location]",
-			"type": "string"
-		},
+	    "defaultValue": "[resourceGroup().location]",
+	    "type": "string"
+	},
         "virtualMachines_panorama_name": {
             "defaultValue": "CHANGEMEpanorama",
             "type": "String"
@@ -31,16 +31,16 @@
             "type": "String"
         },
         "vnetAddressPrefix": {
-        	"defaultValue": "172.20.0.0/16",
-        	"type": "string"
+            "defaultValue": "172.20.0.0/16",
+            "type": "string"
         },
-		"subnet1Name": {
-			"defaultValue": "Mgmt",
-			"type": "string"
-		},
+	"subnet1Name": {
+  	    "defaultValue": "Mgmt",
+	    "type": "string"
+	},
         "subnet1Prefix": {
-        	"defaultValue": "172.20.0.0/24",
-        	"type": "string"
+            "defaultValue": "172.20.0.0/24",
+            "type": "string"
         },
         "adminUsername": {
             "defaultValue": "",
