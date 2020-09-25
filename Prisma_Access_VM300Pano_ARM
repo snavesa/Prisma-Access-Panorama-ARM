@@ -274,6 +274,43 @@
             }
         },
         {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2020-05-01",
+            "name": "internal_routetable",
+            "location": "[parameters('location')]",
+            "properties": {
+            	"disableBgpRoutePropagation": false,
+            	"routes": [
+            		{
+            			"name": "default",
+            			"properties": {
+            				"addressPrefix": "0.0.0.0/0",
+            				"nextHopType": "VirtualAppliance",
+            				"nextHopIpAddress": "[concat(substring(parameters('subnet3Prefix'),0,sub(length(parameters('subnet3Prefix')), 4)), '4')]"
+            			}
+            		}
+            	]
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2020-05-01",
+            "name": "external_routetable",
+            "location": "[parameters('location')]",
+            "properties": {
+            	"disableBgpRoutePropagation": false,
+            	"routes": [
+            		{
+            			"name": "default",
+            			"properties": {
+            				"addressPrefix": "0.0.0.0/0",
+            				"nextHopType": "Internet"
+            			}
+            		}
+            	]
+            }
+        },
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-05-01",
             "name": "[parameters('virtualNetworks_VNET_name')]",
@@ -313,8 +350,11 @@
 					"properties": {
 						"addressPrefix": "[parameters('subnet2Prefix')]",
 						"networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
-                            }
+                            "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                        },
+                        "routeTable": {
+                        	"id": "[resourceId('Microsoft.Network/routeTables', 'external_routetable')]"
+                        }
 					}
 				},
 				{
@@ -330,11 +370,14 @@
 					"properties": {
 						"addressPrefix": "[parameters('subnet3Prefix')]",
 						"networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
-                            }
+                            "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                        },
+                        "routeTable": {
+                        	"id": "[resourceId('Microsoft.Network/routeTables', 'internal_routetable')]"
+                        }
 					}
 				}
-				]
+			]
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
@@ -465,43 +508,6 @@
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
                 }
-            }
-        },
-        {
-            "type": "Microsoft.Network/routeTables",
-            "apiVersion": "2020-05-01",
-            "name": "internal_routetable",
-            "location": "[parameters('location')]",
-            "properties": {
-            	"disableBgpRoutePropagation": false,
-            	"routes": [
-            		{
-            			"name": "default",
-            			"properties": {
-            				"addressPrefix": "0.0.0.0/0",
-            				"nextHopType": "VirtualAppliance",
-            				"nextHopIpAddress": "[concat(substring(parameters('subnet3Prefix'),0,sub(length(parameters('subnet3Prefix')), 4)), '4')]"
-            			}
-            		}
-            	]
-            }
-        },
-        {
-            "type": "Microsoft.Network/routeTables",
-            "apiVersion": "2020-05-01",
-            "name": "external_routetable",
-            "location": "[parameters('location')]",
-            "properties": {
-            	"disableBgpRoutePropagation": false,
-            	"routes": [
-            		{
-            			"name": "default",
-            			"properties": {
-            				"addressPrefix": "0.0.0.0/0",
-            				"nextHopType": "Internet"
-            			}
-            		}
-            	]
             }
         },
         {
