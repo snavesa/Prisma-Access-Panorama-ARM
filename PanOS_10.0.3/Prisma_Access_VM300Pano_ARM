@@ -522,7 +522,7 @@
             ],
             "plan": {
                 "name": "byol",
-                "product": "vmseries1",
+                "product": "vmseries-flex",
                 "publisher": "paloaltonetworks"
             },
             "properties": {
